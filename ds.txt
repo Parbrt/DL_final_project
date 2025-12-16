@@ -1,0 +1,8 @@
+https://www.kaggle.com/datasets/christianlillelund/csgo-round-winner-classification
+
+classification:
+	round_winner
+
+regression:
+	ct_money
+	ct_health
