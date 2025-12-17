@@ -1,19 +1,20 @@
 import pandas as pd
 
+def del_unused_weapons(df, treshold = 0.01):
+    df_unused = df.copy()
+    weapons_cols = [col for col in df.columns if 'weapon' in col]
+    unused_weapons = []
+    for col in weapons_cols:
+        presence_rate = df[col].mean()
+        if presence_rate < treshold:
+            unused_weapons.append(col)
 
-def del_empty_colums(df):
-    col = df.columns
-
-    t = []
-    for i in col:
-        t.append(df[i])
-
-    temp = []
-    for i in range(len(t)):
-        if t[i] == 1:
-            temp.append(i)
-            df.drop(i, inplace=True)
-            print(f"colonnes supprimées: {df.columns[i]}")
+    print(f"unused columns:{unused_weapons}")
+    cols_to_drop = unused_weapons
+    for col in cols_to_drop:
+        if col in unused_weapons:
+            df_unused = df_unused.drop(col, axis = 1)
+    return df_unused
 
 def aggregate_weapons(df):
     df_agreg = df.copy()
@@ -37,6 +38,11 @@ def aggregate_weapons(df):
 
     return df_agreg
 
-def del_unused_weapons(df):
-    df_unused = df.copy()
-    ct_weapons = ['ct_ak47']
+def one_hot_col(df,col_name):
+    df_encoded = pd.get_dummies(df,columns=[col_name])
+    df_encoded = df_encoded.replace({True:1, False:0})
+    return df_encoded
+
+def name2bin(df, col_name,cat_1 = "CT",cat_2 = "T"):
+    df = df.replace({cat_1:1, cat_2:0})
+    return df
