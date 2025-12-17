@@ -39,7 +39,7 @@ def run_classification_tf():
     model_final = clf_module.train_final_optimized(study.best_params, X_train, y_train)
     clf_module.evaluate_model(model_final, X_test, y_test, title="FINAL CLF OPTIMISÉ")
 
-def run_regression_torch()
+def run_regression_torch():
     reg_optimization()
-def run_classification_torch()
+def run_classification_torch():
     cat_optimization()
