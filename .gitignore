@@ -4,8 +4,4 @@ src/__pycache__
 
 shell.nix
 
-data/processed/
-
 .idea
-
-/data/processed/
