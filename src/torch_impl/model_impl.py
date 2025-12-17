@@ -62,8 +62,8 @@ class RegModel():
         for epoch in range(self.nb_epoch):
             optimizer.zero_grad()
             outputs = self.model(self.X_train_tensor)
-            loss = criterion(outputs, self.Y_train_tensor)
-            loss.backward()
+            self.loss = criterion(outputs, self.Y_train_tensor)
+            self.loss.backward()
             optimizer.step()
 
         self.training_time = time() - start_time
@@ -171,8 +171,8 @@ class CatModel():
         for epoch in range(self.nb_epoch):
             optimizer.zero_grad()
             outputs = self.model(self.X_train_tensor)
-            loss = criterion(outputs, self.y_train_tensor)
-            loss.backward()
+            self.loss = criterion(outputs, self.y_train_tensor)
+            self.loss.backward()
             optimizer.step()
 
         self.training_time = time() - start_time
@@ -202,13 +202,15 @@ class CatModel():
         print(f"* accuracy (training) : {self.acc_train}\n* accuracy (prediction) : {self.acc_test}")
 
 
-"""
+""" regression exemple
 reg_model_base = RegModel()
 reg_model_base.train()
 reg_model_base.guess()
 reg_model_base.get_metrics()
 """
+""" classification exemple
 cat_model_base = CatModel()
 cat_model_base.train()
 cat_model_base.guess()
 cat_model_base.get_metrics()
+"""
