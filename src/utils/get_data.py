@@ -15,7 +15,6 @@ def process_data():
     df_one_hot_col = one_hot_col(df_without_unused_weapons,'map')
     df_final = name2bin(df_one_hot_col,'round_winner')
 
-    print(df_final)
 
     y_cat = df_final['round_winner']
     y_reg = df_final[['ct_money','ct_health']]
@@ -59,13 +58,41 @@ def get_data():
         output:
             (pandas: DataFrame): x_train, x_test, y_train_reg, y_test_reg, y_train_cat, y_test_cat
     """
-    x_train = pd.read_csv("data/processd/X_train.csv")
-    x_test = pd.read_csv("data/processd/X_test.csv")
+    x_train = pd.read_csv("data/processed/X_train.csv")
+    x_test = pd.read_csv("data/processed/X_test.csv")
     
-    y_train_reg = pd.read_csv("data/processd/y_train_reg_scaled.csv")
-    y_test_reg = pd.read_csv("data/processd/y_test_reg_scaled.csv")
+    y_train_reg = pd.read_csv("data/processed/y_train_reg_scaled.csv")
+    y_test_reg = pd.read_csv("data/processed/y_test_reg_scaled.csv")
 
-    y_train_cat = pd.read_csv("data/processd/y_train_cat.csv")
-    y_test_cat = pd.read_csv("data/processd/y_test_cat.csv")
+    y_train_cat = pd.read_csv("data/processed/y_train_cat.csv")
+    y_test_cat = pd.read_csv("data/processed/y_test_cat.csv")
+    
+    return x_train, x_test, y_train_reg, y_test_reg, y_train_cat, y_test_cat
 
-process_data()
+def get_scaler():
+    """
+        output:
+            scaler
+    """
+
+    df = pd.read_csv('data/csgo_round_snapshots.csv')
+
+    df_without_unused_weapons = del_unused_weapons(df)
+    df_one_hot_col = one_hot_col(df_without_unused_weapons,'map')
+    df_final = name2bin(df_one_hot_col,'round_winner')
+
+
+    y_cat = df_final['round_winner']
+    y_reg = df_final[['ct_money','ct_health']]
+    X = df_final.drop(columns=['round_winner','ct_money','ct_health'])
+
+    X_train, X_test, y_train_reg, y_test_reg, y_train_cat, y_test_cat = train_test_split(
+    X, y_reg, y_cat, test_size=0.2, random_state=42
+    )
+
+    scaler_y = preprocessing.StandardScaler()
+    
+
+    scaler_y.fit(y_train_reg)
+    
+    return scaler_y
