@@ -46,4 +46,3 @@ def run_regression_torch():
     reg_optimization()
 def run_classification_torch():
     cat_optimization()
-

@@ -1,6 +1,7 @@
 from src.torch_impl.model_impl import RegModel, CatModel
 from src.main import run_regression_tf, run_classification_tf, run_regression_torch, run_classification_torch
 
+
 def app():
     """
         cli app
