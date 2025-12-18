@@ -1,8 +1,12 @@
 import optuna
 
-import tf_impl.model_reg as reg_module
-import tf_impl.model_cla as clf_module
-from torch_impl.opt_param import reg_optimization, cat_optimization
+import src.tf_impl.model_reg as reg_module
+import src.tf_impl.model_cla as clf_module
+from src.torch_impl.opt_param import reg_optimization, cat_optimization
+from src.app import app
+
+app()
+
 
 def run_regression_tf():
     X_train, X_test, y_train, y_test, scaler, y_real_test = reg_module.load_data()
@@ -43,3 +47,4 @@ def run_regression_torch():
     reg_optimization()
 def run_classification_torch():
     cat_optimization()
+
