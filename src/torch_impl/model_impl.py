@@ -9,6 +9,7 @@ import torch.nn.utils.prune as prune
 import torch.nn.functional as F
 import pandas as pd
 from src.utils.get_data import get_scaler
+from random import randint
 
 df_list = get_data()
 print("get_data successeful")
@@ -120,6 +121,24 @@ class RegModel():
         print(f"* RMSE (training - money) : {self.RMSE_train_money}\n* RMSE (prediction - money) : {self.RMSE_test_money}")
         print(f"* R2 (training) : {self.R2_train}\n* R2 (prediction) : {self.R2_test}")
 
+    def random_pred(self):
+        start_time = time()
+        index = randint(0, len(self.X_test)-1)
+        sample_x = self.X_test.iloc[index:index+1]
+        sample_x = torch.tensor(sample_x.values,dtype = torch.float32)
+
+        y_pred = self.model(sample_x).detach().cpu().numpy()
+        real_values = self.Y_test.iloc[index:index+1].values
+        scaler = get_scaler()
+        y_pred = scaler.inverse_transform(y_pred)
+        real_values = scaler.inverse_transform(real_values)
+        
+        pred_time = time() - start_time
+        
+        print(f"---MLP regression prediction of an element---\n* Index: {index}\n* Prediction time (s): {pred_time}")
+        print(f"* Prediction - Money: {y_pred[0][0]:.0f}, Health: {y_pred[0][0]:.1f}")
+        print(f"* Real values - Money: {real_values[0][0]:.0f}, Health: {real_values[0][1]:.1f}")
+
 
 
 class CatModel():
@@ -201,16 +220,33 @@ class CatModel():
         print(f"---MLP classification (prunned {self.prune_amount}) metrics---\n* Training time (s): {self.training_time}\n* Predicting time (s): {self.testing_time}")
         print(f"* accuracy (training) : {self.acc_train}\n* accuracy (prediction) : {self.acc_test}")
 
+    def random_pred(self):
+        start_time = time()
+        index = randint(0, len(self.X_test)-1)
+        sample_x = self.X_test.iloc[index:index+1]
+        sample_x = torch.tensor(sample_x.values,dtype = torch.float32)
+        y_pred = self.model(sample_x)
+        prediction = "CT" if y_pred.item() >= 0.5 else "T"
+        real_value = "CT" if self.y_test.iloc[index].values[0] == 1 else "T"
+        pred_time = time() - start_time
+        
+        print(f"---MLP classification prediction of an element---\n* Index: {index}\n* Prediction time (s): {pred_time}")
+        print(f"* Prediction: {prediction}")
+        print(f"* Real value: {real_value}")
 
-""" regression exemple
+""" regression exemple """
 reg_model_base = RegModel()
 reg_model_base.train()
 reg_model_base.guess()
 reg_model_base.get_metrics()
-"""
-""" classification exemple
+reg_model_base.random_pred()
+""" """
+""" classification exemple """
 cat_model_base = CatModel()
 cat_model_base.train()
 cat_model_base.guess()
 cat_model_base.get_metrics()
-"""
+cat_model_base.random_pred()
+""" """
+
+
