@@ -1,17 +1,17 @@
 import pandas as pd
 import tensorflow as tf
+from sklearn.metrics import mean_absolute_error, r2_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import mean_absolute_error, r2_score
 
 
 def load_data():
-    X_train = pd.read_csv('../data/processed/X_train.csv')
-    X_test = pd.read_csv('../data/processed/X_test.csv')
-    y_train_reg = pd.read_csv('../data/processed/y_train_reg_scaled.csv')
-    y_test_reg = pd.read_csv('../data/processed/y_test_reg_scaled.csv')
+    X_train = pd.read_csv('data/processed/X_train.csv')
+    X_test = pd.read_csv('data/processed/X_test.csv')
+    y_train_reg = pd.read_csv('data/processed/y_train_reg_scaled.csv')
+    y_test_reg = pd.read_csv('data/processed/y_test_reg_scaled.csv')
 
-    df_raw = pd.read_csv('../data/csgo_round_snapshots.csv')
+    df_raw = pd.read_csv('data/csgo_round_snapshots.csv')
     y_reg_raw = df_raw[['ct_money', 'ct_health']]
 
     _, _, y_train_real, y_test_real = train_test_split(
@@ -49,6 +49,7 @@ def train_baseline(X_train, y_train):
     model.fit(X_train, y_train, validation_split=0.2, epochs=20, batch_size=64, verbose=0)
     return model
 
+
 def objective_optuna(trial, X_train, y_train):
     params = {
         'units_1': trial.suggest_int('units_1', 16, 128),
@@ -77,23 +78,24 @@ def objective_optuna(trial, X_train, y_train):
     history = model.fit(X_train, y_train, validation_split=0.2, epochs=15, batch_size=64, verbose=0)
     return history.history['val_loss'][-1]
 
+
 def train_final_optimized(best, X_train, y_train):
-        model = tf.keras.Sequential([
-            tf.keras.layers.Input(shape=(X_train.shape[1],)),
-            tf.keras.layers.Dense(best['units_1'], activation=best['activation'],
-                                  kernel_regularizer=tf.keras.regularizers.l2(best['l2_reg'])),
-            tf.keras.layers.Dropout(best['dropout_rate_1']),
-            tf.keras.layers.Dense(best['units_2'], activation=best['activation'],
-                                  kernel_regularizer=tf.keras.regularizers.l2(best['l2_reg'])),
-            tf.keras.layers.Dropout(best['dropout_rate_2']),
-            tf.keras.layers.Dense(2, activation='linear')
-        ])
+    model = tf.keras.Sequential([
+        tf.keras.layers.Input(shape=(X_train.shape[1],)),
+        tf.keras.layers.Dense(best['units_1'], activation=best['activation'],
+                              kernel_regularizer=tf.keras.regularizers.l2(best['l2_reg'])),
+        tf.keras.layers.Dropout(best['dropout_rate_1']),
+        tf.keras.layers.Dense(best['units_2'], activation=best['activation'],
+                              kernel_regularizer=tf.keras.regularizers.l2(best['l2_reg'])),
+        tf.keras.layers.Dropout(best['dropout_rate_2']),
+        tf.keras.layers.Dense(2, activation='linear')
+    ])
 
-        model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=best['learning_rate']),
-                      loss='mse', metrics=['mae'])
+    model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=best['learning_rate']),
+                  loss='mse', metrics=['mae'])
 
-        stopper = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=10, restore_best_weights=True)
+    stopper = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=10, restore_best_weights=True)
 
-        model.fit(X_train, y_train, validation_split=0.2, epochs=100, batch_size=64,
-                  callbacks=[stopper], verbose=1)
-        return model
+    model.fit(X_train, y_train, validation_split=0.2, epochs=100, batch_size=64,
+              callbacks=[stopper], verbose=1)
+    return model

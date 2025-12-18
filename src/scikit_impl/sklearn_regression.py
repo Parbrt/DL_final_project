@@ -1,17 +1,15 @@
-import numpy as np
-from sklearn.model_selection import KFold, cross_validate
-from sklearn.metrics import make_scorer, mean_absolute_error, mean_squared_error, r2_score
-
-from sklearn.dummy import DummyRegressor
-from sklearn.linear_model import Ridge
-from sklearn.ensemble import RandomForestRegressor, HistGradientBoostingRegressor
-from sklearn.multioutput import MultiOutputRegressor
-
-
-import pandas as pd
 from pathlib import Path
 
-DATA = Path("../data/processed")
+import numpy as np
+import pandas as pd
+from sklearn.dummy import DummyRegressor
+from sklearn.ensemble import HistGradientBoostingRegressor
+from sklearn.linear_model import Ridge
+from sklearn.metrics import make_scorer, mean_absolute_error, mean_squared_error, r2_score
+from sklearn.model_selection import KFold, cross_validate
+from sklearn.multioutput import MultiOutputRegressor
+
+DATA = Path("data/processed")
 
 
 def rmse(y_true, y_pred):
@@ -19,15 +17,14 @@ def rmse(y_true, y_pred):
 
 
 def run_regression_sklearn():
+    X_train = pd.read_csv(DATA / "X_train.csv")
+    X_test = pd.read_csv(DATA / "X_test.csv")
 
-    X_train = pd.read_csv(DATA/"X_train.csv")
-    X_test  = pd.read_csv(DATA/"X_test.csv")
+    y_train_cat = pd.read_csv(DATA / "y_train_cat.csv").squeeze()
+    y_test_cat = pd.read_csv(DATA / "y_test_cat.csv").squeeze()
 
-    y_train_cat = pd.read_csv(DATA/"y_train_cat.csv").squeeze()
-    y_test_cat  = pd.read_csv(DATA/"y_test_cat.csv").squeeze()
-
-    y_train_reg = pd.read_csv(DATA/"y_train_reg_scaled.csv")
-    y_test_reg  = pd.read_csv(DATA/"y_test_reg_scaled.csv")
+    y_train_reg = pd.read_csv(DATA / "y_train_reg_scaled.csv")
+    y_test_reg = pd.read_csv(DATA / "y_test_reg_scaled.csv")
 
     print("Loaded OK:")
     print("X_train:", X_train.shape, "X_test:", X_test.shape)
@@ -87,5 +84,5 @@ def run_regression_sklearn():
     out = Path("../results")
     out.mkdir(exist_ok=True)
 
-    reg_results_df.to_csv(out/"sklearn_regression_results.csv", index=False)
-    print("Saved:", (out/"sklearn_regression_results.csv").resolve())
+    reg_results_df.to_csv(out / "sklearn_regression_results.csv", index=False)
+    print("Saved:", (out / "sklearn_regression_results.csv").resolve())

@@ -2,15 +2,18 @@ import pandas as pd
 import tensorflow as tf
 from sklearn.metrics import roc_auc_score
 
-def load_data():
 
-    X_train = pd.read_csv('../data/processed/X_train.csv')
-    X_test = pd.read_csv('../data/processed/X_test.csv')
-    y_train = pd.read_csv('../data/processed/y_train_cat.csv')
-    y_test = pd.read_csv('../data/processed/y_test_cat.csv')
+# chargement des donnees
+def load_data():
+    X_train = pd.read_csv('data/processed/X_train.csv')
+    X_test = pd.read_csv('data/processed/X_test.csv')
+    y_train = pd.read_csv('data/processed/y_train_cat.csv')
+    y_test = pd.read_csv('data/processed/y_test_cat.csv')
 
     return X_train, X_test, y_train, y_test
 
+
+# fonction d'evaluation de modele
 def evaluate_model(model, X_test, y_test, title="MODÈLE"):
     y_pred_prob = model.predict(X_test, verbose=0)
 
@@ -24,6 +27,8 @@ def evaluate_model(model, X_test, y_test, title="MODÈLE"):
     print(f"AUC ROC  : {auc:.4f}")
     print(f"LOSS     : {loss:.4f}")
 
+
+# baseline classification
 def train_baseline(X_train, y_train):
     n_col = X_train.shape[1]
 
@@ -46,8 +51,8 @@ def train_baseline(X_train, y_train):
     return model
 
 
+# optimisation du modele par optuna
 def objective_optuna(trial, X_train, y_train):
-
     params = {
         'activation': trial.suggest_categorical('activation', ['relu', 'elu', 'swish']),
         'units_1': trial.suggest_int('units_1', 16, 100),
@@ -89,6 +94,7 @@ def objective_optuna(trial, X_train, y_train):
     return history.history['val_loss'][-1]
 
 
+# entrainement du modele avec les meilleurs parametres
 def train_final_optimized(best, X_train, y_train):
     model = tf.keras.Sequential([
         tf.keras.layers.Input(shape=(X_train.shape[1],)),
