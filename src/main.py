@@ -3,9 +3,8 @@ import optuna
 import src.tf_impl.model_reg as reg_module
 import src.tf_impl.model_cla as clf_module
 from src.torch_impl.opt_param import reg_optimization, cat_optimization
-from src.app import app
 
-app()
+
 
 
 def run_regression_tf():
