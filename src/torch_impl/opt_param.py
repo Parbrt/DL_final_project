@@ -21,7 +21,12 @@ def reg_objective(trial):
     return model.loss.item()
 
 def reg_optimization():
-    study = optuna.create_study(direction = 'minimize')
+    study = optuna.create_study(
+        study_name="optimization_csgo_torch",
+        storage="sqlite:///../db.sqlite3",
+        direction='minimize',
+        load_if_exists=True
+    )
     study.optimize(reg_objective,n_trials = 5)
     print("Best hyperparameters:",study.best_params)
     best_model = RegModel(hl1 = study.best_params['hidden_layer_1'],
@@ -53,7 +58,12 @@ def cat_objective(trial):
     return model.loss.item()
 
 def cat_optimization():
-    study = optuna.create_study(direction = 'minimize')
+    study = optuna.create_study(
+        study_name="optimization_winner_torch",
+        storage="sqlite:///../db.sqlite3",
+        direction='minimize',
+        load_if_exists=True
+    )
     study.optimize(cat_objective,n_trials = 5)
     print("Best hyperparameters:",study.best_params)
     best_model = CatModel(hl1 = study.best_params['hidden_layer_1'],

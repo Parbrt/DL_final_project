@@ -11,12 +11,12 @@ def run_regression_tf():
     reg_module.evaluate_model(model_base, X_test, scaler, y_real_test, title="BASELINE REG")
 
     study = optuna.create_study(
-        study_name="optimization_csgo_reg",
+        study_name="optimization_csgo",
         storage="sqlite:///../db.sqlite3",
         direction='minimize',
         load_if_exists=True
     )
-    study.optimize(lambda trial: reg_module.objective_optuna(trial, X_train, y_train), n_trials=20)
+    study.optimize(lambda trial: reg_module.objective_optuna(trial, X_train, y_train), n_trials=100)
 
     model_final = reg_module.train_final_optimized(study.best_params, X_train, y_train)
     reg_module.evaluate_model(model_final, X_test, scaler, y_real_test, title="FINAL REG OPTIMISÉ")
@@ -29,12 +29,12 @@ def run_classification_tf():
     clf_module.evaluate_model(model_base, X_test, y_test, title="BASELINE CLF")
 
     study = optuna.create_study(
-        study_name="optimization_csgo_clf",
+        study_name="optimization_winner",
         storage="sqlite:///../db.sqlite3",
         direction='minimize',
         load_if_exists=True
     )
-    study.optimize(lambda trial: clf_module.objective_optuna(trial, X_train, y_train), n_trials=20)
+    study.optimize(lambda trial: clf_module.objective_optuna(trial, X_train, y_train), n_trials=60)
 
     model_final = clf_module.train_final_optimized(study.best_params, X_train, y_train)
     clf_module.evaluate_model(model_final, X_test, y_test, title="FINAL CLF OPTIMISÉ")
