@@ -11,8 +11,6 @@ import pandas as pd
 from src.utils.get_data import get_scaler
 from random import randint
 
-df_list = get_data()
-print("get_data successeful")
 
 class RegModel():
     """
