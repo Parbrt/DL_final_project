@@ -234,19 +234,19 @@ class CatModel():
         print(f"* Prediction: {prediction}")
         print(f"* Real value: {real_value}")
 
-""" regression exemple """
+""" regression exemple 
 reg_model_base = RegModel()
 reg_model_base.train()
 reg_model_base.guess()
 reg_model_base.get_metrics()
 reg_model_base.random_pred()
-""" """
-""" classification exemple """
+""" 
+""" classification exemple 
 cat_model_base = CatModel()
 cat_model_base.train()
 cat_model_base.guess()
 cat_model_base.get_metrics()
 cat_model_base.random_pred()
-""" """
+""" 
 
 

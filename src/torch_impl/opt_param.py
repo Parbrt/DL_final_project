@@ -75,4 +75,3 @@ def cat_optimization():
     best_model.train()
     best_model.guess()
     best_model.get_metrics()
-cat_optimization()
