@@ -9,3 +9,15 @@
 #### regression:
 	ct_money
 	ct_health
+## Lancement 
+à la racine du projet:
+	python3 -m src.app
+
+## Librairies
+	scikit-learn
+	numpy
+	optuna
+	pandas
+	mpmath
+	pytorch
+	tensorflow
