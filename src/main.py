@@ -3,9 +3,14 @@ import optuna
 import src.tf_impl.model_reg as reg_module
 import src.tf_impl.model_cla as clf_module
 from src.torch_impl.opt_param import reg_optimization, cat_optimization
+from src.scikit_impl.sklearn_classification import run_classification_sklearn
+from src.scikit_impl.sklearn_regression import run_regression_sklearn
 
+def run_regression_sk():
+    run_regression_sklearn()
 
-
+def run_classification_sk():
+    run_classification_sklearn()
 
 def run_regression_tf():
     X_train, X_test, y_train, y_test, scaler, y_real_test = reg_module.load_data()

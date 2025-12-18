@@ -1,5 +1,5 @@
 from src.torch_impl.model_impl import RegModel, CatModel
-from src.main import run_regression_tf, run_classification_tf, run_regression_torch, run_classification_torch
+from src.main import run_regression_sk,run_classification_sk, run_regression_tf, run_classification_tf, run_regression_torch, run_classification_torch
 
 
 def app():
@@ -11,7 +11,7 @@ def app():
     while(flag):
         choice = input("\n\n1-load a simple model\n2-run a model optimizer\n3-exit\n>>")
         if choice == 1 or choice == '1':
-            choice = input("\n1-regression model\n2-classification model\n>>")
+            choice = input("\n1-regression model (torch)\n2-classification model (torch)\n3-regression (scikit)\n4-classification (sklearn)\n>>")
             if choice == 1 or choice == '1':
                 print("regression model on CS:GO data set, predicting the amount of money and hitpoint of the counter terrorist team using torch")
                 
@@ -46,6 +46,14 @@ def app():
                 else:
                     print("wrong input")
                     choice = 0
+            elif choice == 3 or choice == '3':
+                print("regression model on CS:GO data set, predicting the amount of money and hitpoint of the counter terrorist team using scikit learn")
+                run_regression_sk()
+                choice = 0
+            elif choice == 4 or choice == '4':
+                print("classification model on CS:GO data set, predicting the winning team using scikit learn")
+                run_classification_sk()
+                choice = 0
             else:
                 print("wrong input")
                 choice = 0
